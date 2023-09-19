@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Http\Livewire;
 
-use App\Models\Project as ModelsProject;
 use Livewire\Component;
+use App\Models\Project as ModelsProject;
+use Filament\Notifications\Notification;
 
 class Project extends Component
 {
@@ -31,9 +32,11 @@ class Project extends Component
 
         $this->projects = ModelsProject::where('user_id')->get();
         $this->name = '';
-        session()->flash('project','Project created successfully');
         $this->showCreateProject = false;
-
+        Notification::make()
+            ->title('Project created successfully')
+            ->success()
+            ->send(); 
     }
 
     public function mount()
