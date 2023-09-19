@@ -13,7 +13,11 @@ class Index extends Component
     public $tasks;
     public $showCreateTask = false;
     public $name = '';
+    public $editName = '';
     public $project;
+    public $showEdit = false;
+    public $showDelete = false;
+    public $listeners = ['updateTask'];
 
 
     public function submit()
@@ -36,12 +40,31 @@ class Index extends Component
     }
 
     public function updateTaskOrder($tasks){
-        dd($tasks);
+        foreach ($tasks as $orderedTask) {
+            $task = Task::find($orderedTask['value']);
+            if($task){
+                $task->update([
+                    'priority' => $orderedTask['order']
+                ]);
+            }
+        }
+
+        $this->updateTask();
+        // $this->tasks = $this->project->tasks()->orderBy('priority', 'asc')->get();
+        
     }
+
+    public function updateTask()
+    {
+        $this->tasks = null;
+        $this->tasks = Task::where('project_id',$this->project['id'])->orderBy('priority', 'asc')->get();
+    }
+
+
+    
     public function mount(Project $project)
     {
-        // $this->project = $project;
-        // dd($this->project);
+        $this->project = $project;
         $this->tasks = $project->tasks()->orderBy('priority','asc')->get();
 
     }
